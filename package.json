@@ -3,13 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "main": "electron/main.js",
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
-    "electron": "electron."
+    "ele": "vite | electron ."
   },
   "dependencies": {
     "electron": "^33.2.1",
@@ -24,6 +25,7 @@
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitejs/plugin-vue-jsx": "^4.1.1",
     "@vue/tsconfig": "^0.7.0",
+    "electron-builder": "^25.1.8",
     "npm-run-all2": "^7.0.1",
     "typescript": "~5.6.3",
     "vite": "^6.0.1",
