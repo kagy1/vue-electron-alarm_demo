@@ -1,0 +1,236 @@
+// 变量定义
+$primary-color: #ff6b6b;
+$secondary-color: #4ecdc4;
+$button-color: #45b7af;
+$button-hover-color: #3a9c95;
+$danger-color: #ff5252;
+$border-color: #ddd;
+$shadow-color: rgba(0, 0, 0, 0.1);
+$text-color: #333;
+$white: #fff;
+
+// Mixins
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin button-base {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: $white;
+  transition: background-color 0.3s;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.clockContainer {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.timer {
+  padding: 40px;
+  border-radius: 50%;
+  width: 300px;
+  height: 300px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: $primary-color;
+  color: $white;
+  box-shadow: 0 4px 6px $shadow-color;
+  transition: background-color 0.3s ease;
+
+  &.break {
+    background-color: $secondary-color;
+  }
+
+  &.running {
+    animation: pulse 2s infinite;
+  }
+}
+
+.timerDisplay {
+  font-size: 4em;
+  margin: 0;
+}
+
+.status {
+  font-size: 1.2em;
+  margin-top: 10px;
+}
+
+.controls {
+  margin: 20px 0;
+}
+
+.button {
+  @include button-base;
+  padding: 10px 20px;
+  margin: 0 10px;
+  font-size: 1.1em;
+  background-color: $button-color;
+
+  &:hover {
+    background-color: $button-hover-color;
+  }
+}
+
+.settings {
+  margin: 20px 0;
+}
+
+.settingItem {
+  @include flex-center;
+  margin: 10px 0;
+  gap: 10px;
+}
+
+.input {
+  width: 60px;
+  padding: 5px;
+  border: 1px solid $border-color;
+  border-radius: 4px;
+
+  &:focus {
+    outline: none;
+    border-color: $secondary-color;
+  }
+}
+
+.taskContainer {
+  background-color: $white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px $shadow-color;
+}
+
+.taskHeader {
+  margin-top: 0;
+  color: $text-color;
+}
+
+.taskInput {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.taskInputField {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid $border-color;
+  border-radius: 4px;
+  
+  &:focus {
+    outline: none;
+    border-color: $secondary-color;
+  }
+}
+
+.taskList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.taskItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s ease;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background-color: rgba($secondary-color, 0.1);
+  }
+
+  &.completed {
+    .taskContent {
+      text-decoration: line-through;
+      color: #888;
+    }
+  }
+}
+
+.taskLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.deleteButton {
+  @include button-base;
+  padding: 5px 10px;
+  background-color: $primary-color;
+
+  &:hover {
+    background-color: $danger-color;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .timer {
+    width: 250px;
+    height: 250px;
+    padding: 20px;
+  }
+
+  .timerDisplay {
+    font-size: 3em;
+  }
+}
+
+@media (max-width: 480px) {
+  .timer {
+    width: 200px;
+    height: 200px;
+  }
+
+  .timerDisplay {
+    font-size: 2.5em;
+  }
+
+  .button {
+    padding: 8px 16px;
+    font-size: 1em;
+  }
+
+  .taskContainer {
+    padding: 15px;
+  }
+}
