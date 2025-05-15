@@ -11,7 +11,7 @@ const createWindow = () => {
         height: 700,
     })
 
-    mainWindow.loadURL("http://localhost:3000/");
+    mainWindow.loadURL("http://localhost:7500/");
 }
 
 // 在应用准备就绪时调用函数
