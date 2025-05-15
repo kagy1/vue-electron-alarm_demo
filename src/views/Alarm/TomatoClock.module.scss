@@ -1,9 +1,9 @@
+// TomatoClock.module.scss
 // 变量定义
 $primary-color: #ff6b6b;
 $secondary-color: #4ecdc4;
 $button-color: #45b7af;
 $button-hover-color: #3a9c95;
-$danger-color: #ff5252;
 $border-color: #ddd;
 $shadow-color: rgba(0, 0, 0, 0.1);
 $text-color: #333;
@@ -33,7 +33,7 @@ $white: #fff;
 
 .clockContainer {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 }
 
 .timer {
@@ -108,96 +108,15 @@ $white: #fff;
   }
 }
 
-.taskContainer {
-  background-color: $white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px $shadow-color;
-}
-
-.taskHeader {
-  margin-top: 0;
-  color: $text-color;
-}
-
-.taskInput {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.taskInputField {
-  flex: 1;
-  padding: 8px;
-  border: 1px solid $border-color;
-  border-radius: 4px;
-  
-  &:focus {
-    outline: none;
-    border-color: $secondary-color;
-  }
-}
-
-.taskList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.taskItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid #eee;
-  transition: background-color 0.2s ease;
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  &:hover {
-    background-color: rgba($secondary-color, 0.1);
-  }
-
-  &.completed {
-    .taskContent {
-      text-decoration: line-through;
-      color: #888;
-    }
-  }
-}
-
-.taskLabel {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex: 1;
-}
-
-.checkbox {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-}
-
-.deleteButton {
-  @include button-base;
-  padding: 5px 10px;
-  background-color: $primary-color;
-
-  &:hover {
-    background-color: $danger-color;
-  }
-}
-
 @keyframes pulse {
   0% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.02);
   }
+
   100% {
     transform: scale(1);
   }
@@ -228,9 +147,5 @@ $white: #fff;
   .button {
     padding: 8px 16px;
     font-size: 1em;
-  }
-
-  .taskContainer {
-    padding: 15px;
   }
 }

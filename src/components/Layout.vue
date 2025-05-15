@@ -39,7 +39,9 @@ import AppMain from "./AppMain";
 /* 左侧导航 */
 .navbar {
     position: absolute;
-    width: 280px;
+    width: 20%;
+    min-width: 200px;
+    max-width: 300px;
     top: 40px;
     /* 把上边header的部分让出来 */
     left: 0px;
