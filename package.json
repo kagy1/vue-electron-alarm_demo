@@ -8,6 +8,10 @@
     "win": {
       "target": "nsis"
     },
+    "files": [
+      "dist/**/*",
+      "electron/**/*"
+    ],
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
@@ -19,9 +23,9 @@
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
-    "ele": "vite | electron .",
+    "ele": "cross-env NODE_ENV=development vite | cross-env NODE_ENV=development electron .",
     "electron:serve": "vite build && electron .",
-    "electron:build": "vite build && electron-builder",
+    "electron:build": "npm run build && electron-builder",
     "electron:dev": "vite | electron ."
   },
   "dependencies": {
