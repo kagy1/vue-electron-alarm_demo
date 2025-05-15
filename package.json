@@ -4,6 +4,15 @@
   "private": true,
   "type": "module",
   "main": "electron/main.js",
+  "build": {
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
