@@ -228,18 +228,27 @@ export default defineComponent({
                 // 保存通知引用
                 currentNotification.value = notification;
 
-                // 处理通知关闭事件
-                notification.addEventListener('close', () => {
-                    // 通知被手动关闭时，也停止声音
+                // 处理通知关闭事件 - 强制使用直接函数定义，避免this指向问题
+                notification.onclose = function () {
+                    console.log('通知关闭，停止声音');
                     stopAlertSound();
-                    currentNotification.value = null;
-                });
+                    if (currentNotification.value === notification) {
+                        currentNotification.value = null;
+                    }
+                };
+
+                notification.onclick = function () {
+                    console.log('通知关闭，停止声音');
+                    stopAlertSound();
+                    if (currentNotification.value === notification) {
+                        currentNotification.value = null;
+                    }
+                };
 
                 // 设置通知自动关闭（30秒后）
                 setTimeout(() => {
                     if (notification && currentNotification.value === notification) {
                         notification.close();
-                        currentNotification.value = null;
                     }
                 }, 30000); // 30秒后自动关闭
 
@@ -430,13 +439,13 @@ export default defineComponent({
                             />
                             启用声音提醒
                         </label>
-                        <button
+                        {/* <button
                             onClick={testSound}
                             class={styles.button}
                             style={{ marginLeft: '10px', fontSize: '0.8em' }}
                         >
                             测试声音
-                        </button>
+                        </button> */}
                     </div>
                 </div>
             </div>
