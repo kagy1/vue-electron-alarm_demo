@@ -147,11 +147,6 @@ export default defineComponent({
                         })
                         .catch(err => {
                             console.error('提示音播放失败:', err);
-
-                            // 如果是自动播放策略问题，可以尝试添加一个临时按钮让用户点击来解锁音频播放
-                            if (err.name === 'NotAllowedError') {
-                                console.warn('浏览器阻止了自动播放，这在开发环境中是正常的。在Electron中应该正常工作。');
-                            }
                         });
                 }
             } else {
@@ -361,13 +356,6 @@ export default defineComponent({
             }
         });
 
-        // 暴露方法给父组件
-        expose({
-            startTimer,
-            stopTimer,
-            resetTimer
-        });
-
         // 渲染模板
         return () => (
             <div class={styles.container}>
@@ -446,6 +434,22 @@ export default defineComponent({
                         >
                             测试声音
                         </button> */}
+
+
+                    </div>
+
+                    <div class={styles.settingItem}>
+                        <button
+                            onClick={() => {
+                                time.value = 1;
+                            }}
+                            class={styles.button}
+                            style={{ marginLeft: '10px', fontSize: '0.8em' }}
+                        >
+                            修改时间
+                        </button>
+
+
                     </div>
                 </div>
             </div>

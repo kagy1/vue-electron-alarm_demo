@@ -19,12 +19,12 @@ import AppMain from "./AppMain";
 </script>
 
 <style lang='scss' scoped>
-/* 头部 */
 .layout {
     width: 100%;
     height: 100%;
 }
 
+/* 头部 */
 .header {
     position: absolute;
     line-height: 50px;
