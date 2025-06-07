@@ -2,6 +2,10 @@ import { defineComponent, ref, onMounted, onUnmounted } from 'vue'
 import type { Ref } from 'vue'
 import styles from './TomatoClock.module.scss'
 
+// 导入音频文件
+// 注意：在Vite/Vue项目中，使用相对路径可能更可靠
+import alertSoundPath from '@/assets/ls1.mp3'
+
 // 声明Electron环境下的Window扩展
 declare global {
     interface Window {
@@ -21,6 +25,9 @@ export default defineComponent({
         const isBreak: Ref<boolean> = ref(false)         // 是否处于休息时间
         const workTime: Ref<number> = ref(25)            // 工作时间(分钟)
         const breakTime: Ref<number> = ref(5)            // 休息时间(分钟)
+        const alertSound: Ref<HTMLAudioElement | null> = ref(null) // 提示音频
+        const soundEnabled: Ref<boolean> = ref(true)     // 声音开关
+        const currentNotification: Ref<Notification | null> = ref(null) // 当前通知对象
 
         /**
          * 格式化时间显示
@@ -39,6 +46,11 @@ export default defineComponent({
         const startTimer = (): void => {
             if (!isRunning.value) {
                 isRunning.value = true;
+
+                // 在开始计时时预加载音频，解决可能的自动播放问题
+                if (alertSound.value) {
+                    alertSound.value.load();
+                }
 
                 if (ipcRenderer) {
                     // 向主进程发送开始计时指令
@@ -115,10 +127,71 @@ export default defineComponent({
         };
 
         /**
+         * 播放提示音
+         */
+        const playAlertSound = (): void => {
+            if (alertSound.value && soundEnabled.value) {
+                console.log('尝试播放提示音...');
+
+                // 重置音频到开始位置
+                alertSound.value.currentTime = 0;
+
+                // 播放音频
+                const playPromise = alertSound.value.play();
+
+                // 处理播放过程中可能的错误
+                if (playPromise !== undefined) {
+                    playPromise
+                        .then(() => {
+                            console.log('提示音播放成功!');
+                        })
+                        .catch(err => {
+                            console.error('提示音播放失败:', err);
+
+                            // 如果是自动播放策略问题，可以尝试添加一个临时按钮让用户点击来解锁音频播放
+                            if (err.name === 'NotAllowedError') {
+                                console.warn('浏览器阻止了自动播放，这在开发环境中是正常的。在Electron中应该正常工作。');
+                            }
+                        });
+                }
+            } else {
+                console.log('提示音未初始化或已禁用');
+            }
+        };
+
+        /**
+         * 停止提示音
+         */
+        const stopAlertSound = (): void => {
+            if (alertSound.value) {
+                alertSound.value.pause();
+                alertSound.value.currentTime = 0;
+            }
+        };
+
+        /**
+         * 测试播放提示音
+         * 用户可以通过此功能手动触发声音，解决自动播放限制
+         */
+        const testSound = (): void => {
+            playAlertSound();
+        };
+
+        /**
+         * 切换声音开关
+         */
+        const toggleSound = (): void => {
+            soundEnabled.value = !soundEnabled.value;
+        };
+
+        /**
          * 处理计时完成事件
          */
         const handleTimerComplete = (): void => {
             stopTimer();
+
+            // 播放提示音
+            playAlertSound();
 
             if (!isBreak.value) {
                 // 工作结束，开始休息
@@ -138,8 +211,44 @@ export default defineComponent({
          * @param message 通知消息内容
          */
         const notifyUser = (message: string): void => {
+            // 如果已有通知，先关闭
+            if (currentNotification.value) {
+                currentNotification.value.close();
+                currentNotification.value = null;
+            }
+
             if (Notification.permission === 'granted') {
-                new Notification('番茄钟提醒', { body: message });
+                // 创建新通知
+                const notification = new Notification('番茄钟提醒', {
+                    body: message,
+                    // 通知不会自动关闭
+                    requireInteraction: true
+                });
+
+                // 保存通知引用
+                currentNotification.value = notification;
+
+                // 处理通知关闭事件
+                notification.addEventListener('close', () => {
+                    // 通知被手动关闭时，也停止声音
+                    stopAlertSound();
+                    currentNotification.value = null;
+                });
+
+                // 设置通知自动关闭（30秒后）
+                setTimeout(() => {
+                    if (notification && currentNotification.value === notification) {
+                        notification.close();
+                        currentNotification.value = null;
+                    }
+                }, 30000); // 30秒后自动关闭
+
+            } else if (Notification.permission !== 'denied') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        notifyUser(message); // 重新尝试发送通知
+                    }
+                });
             }
         };
 
@@ -169,9 +278,34 @@ export default defineComponent({
 
         // 组件挂载时设置
         onMounted(() => {
+            console.log('组件挂载中...');
+
             // 请求通知权限
             if (Notification.permission !== 'granted') {
                 Notification.requestPermission();
+            }
+
+            // 初始化提示音频
+            try {
+                console.log('初始化音频，路径:', alertSoundPath);
+                alertSound.value = new Audio(alertSoundPath);
+
+                // 设置音频循环播放
+                alertSound.value.loop = true;
+
+                // 监听音频加载状态
+                alertSound.value.addEventListener('canplaythrough', () => {
+                    console.log('音频加载完成，可以播放');
+                });
+
+                alertSound.value.addEventListener('error', (e) => {
+                    console.error('音频加载失败:', e);
+                });
+
+                // 预加载音频
+                alertSound.value.load();
+            } catch (err) {
+                console.error('初始化音频失败:', err);
             }
 
             // 设置从主进程接收计时器更新的监听器
@@ -201,6 +335,15 @@ export default defineComponent({
                 clearInterval(legacyTimer);
                 legacyTimer = null;
             }
+
+            // 关闭任何活动的通知
+            if (currentNotification.value) {
+                currentNotification.value.close();
+                currentNotification.value = null;
+            }
+
+            // 停止任何正在播放的声音
+            stopAlertSound();
 
             // 移除IPC事件监听器
             if (ipcRenderer) {
@@ -275,6 +418,25 @@ export default defineComponent({
                                 updateBreakTime(Number(target.value))
                             }}
                         />
+                    </div>
+
+                    {/* 声音设置 */}
+                    <div class={styles.settingItem}>
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={soundEnabled.value}
+                                onChange={toggleSound}
+                            />
+                            启用声音提醒
+                        </label>
+                        <button
+                            onClick={testSound}
+                            class={styles.button}
+                            style={{ marginLeft: '10px', fontSize: '0.8em' }}
+                        >
+                            测试声音
+                        </button>
                     </div>
                 </div>
             </div>
