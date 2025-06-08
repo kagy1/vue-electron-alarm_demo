@@ -441,7 +441,7 @@ export default defineComponent({
                     {/* <div class={styles.settingItem}>
                         <button
                             onClick={() => {
-                                time.value = 1;
+                                time.value = 5;
                             }}
                             class={styles.button}
                             style={{ marginLeft: '10px', fontSize: '0.8em' }}
