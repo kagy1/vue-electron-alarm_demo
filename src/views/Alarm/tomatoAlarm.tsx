@@ -438,7 +438,7 @@ export default defineComponent({
 
                     </div>
 
-                    {/* <div class={styles.settingItem}>
+                    <div class={styles.settingItem}>
                         <button
                             onClick={() => {
                                 time.value = 5;
@@ -449,8 +449,7 @@ export default defineComponent({
                             修改时间
                         </button>
 
-
-                    </div> */}
+                    </div>
                 </div>
             </div>
         )
