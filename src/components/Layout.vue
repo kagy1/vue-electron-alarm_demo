@@ -40,8 +40,7 @@ import AppMain from "./AppMain";
 .navbar {
     position: absolute;
     width: 20%;
-    min-width: 200px;
-    max-width: 300px;
+    min-width: 280px;
     top: 40px;
     /* 把上边header的部分让出来 */
     left: 0px;
